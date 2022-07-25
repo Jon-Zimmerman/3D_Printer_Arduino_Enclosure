@@ -56,7 +56,7 @@ $(function () {
     self.notifications = ko.observableArray([]);
 
     self.humidityCapableSensor = function(sensor){
-      if (['11', '20', '22', '2302', 'bme280', 'bme680', 'am2320', 'aht10' , 'si7021', 'hum_raw_i2c', 'temp_raw_i2c'].indexOf(sensor) >= 0){
+      if (['11', '20', '22', '2302', 'bme280','arduino_hub', 'bme680', 'am2320', 'aht10' , 'si7021', 'hum_raw_i2c', 'temp_raw_i2c'].indexOf(sensor) >= 0){
         return true;
       }
       return false;
@@ -156,8 +156,10 @@ $(function () {
             return (sensor_data['index_id'] == temperature_sensor.index_id());
           }).pop();
           if (linked_temp_sensor){
+            console.log(Object.keys(linked_temp_sensor))
             linked_temp_sensor.temp_sensor_temp(sensor_data['temperature'])
             linked_temp_sensor.temp_sensor_humidity(sensor_data['humidity'])
+            linked_temp_sensor.temp_sensor_fan(sensor_data['fan'])
           }
         })
       }
@@ -454,6 +456,7 @@ $(function () {
         temp_sensor_address: ko.observable(""),
         temp_sensor_temp: ko.observable(""),
         temp_sensor_humidity: ko.observable(""),
+        temp_sensor_fan: ko.observable(""),
         ds18b20_serial: ko.observable(""),
         use_fahrenheit: ko.observable(false),
         action_type: ko.observable("output_control"),
@@ -543,6 +546,13 @@ $(function () {
       });
     };
 
+    self.handleConnectSerial = function () {
+      $.ajax({
+        type: "GET",
+        url: self.buildPluginUrl("/ConnectSerial")
+      });
+    };
+    
     self.handleShellOutput = function (item, form) {
       var request = {
         "index_id": item.index_id()

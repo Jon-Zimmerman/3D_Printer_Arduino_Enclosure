@@ -1,8 +1,13 @@
 <!-- <pre data-bind="text: ko.toJSON($root.rpi_outputs(), null, 2)"></pre> -->
-
+<div class="row-fluid">
+    <h4>Connection Status</h4>
+    <button type="submit" data-bind="enable: $root.isUser(), click: $root.handleConnectSerial" class="btn btn-primary" title="Connect">Connect
+                               
+    </button>
+</div>
 <!-- ko if: ($root.rpi_inputs_temperature_sensors().length > 0)  -->
 <div class="row-fluid">
-    <h4>Temperature</h4>
+    <h4>Enclosure</h4>
     <!-- <pre data-bind="text: ko.toJSON($root.rpi_inputs_temperature_sensors(), null, 2)"></pre> -->
     <table id="enclosure-table" class="table table-bordered table-hover">
         <tbody>
@@ -12,8 +17,9 @@
                 <!-- ko if: ($root.hasAnySensorWithHumidity())  -->
                 <th class="humidity_actual" title="{{ _('Current humidity') }}">{{ _('Humidity') }}</th>
                 <!-- /ko -->
+                <th class="fan_actual" title="{{ _('Current Fan Speed') }}">{{ _('Fan Speed') }}</th>
                 <!-- ko if: ($root.hasAnyTemperatureControl())  -->
-                <th class="temp_hum_control">{{ _('Control') }}</th>
+                {# <th class="temp_hum_control">{{ _('Control') }}</th> #}
                 <th class="temperature_target" title="{{ _('Current target temperature') }}">{{ _('Target') }}</th>
                 <!-- /ko -->
             </tr>
@@ -36,7 +42,10 @@
                     <span class="add-on">%</span>
                 </td>
                 <!-- /ko -->
-
+                <td class="fan_actual" data-bind="attr: {rowspan: $root.calculateRowSpan(index_id)}">
+                    <span data-bind="text: temp_sensor_fan, attr: {title: temp_sensor_fan}"> </span>
+                    <span class="add-on">%</span>
+                </td>
                 <!-- ko if: ($root.hasAnySensorWithHumidity())  -->
                 <!-- ko ifnot: ($root.humidityCapableSensor(temp_sensor_type()))  -->
                 <td class="humidity_actual" data-bind="attr: {rowspan: $root.calculateRowSpan(index_id)}">N/A</td>
@@ -45,7 +54,7 @@
 
                 <!-- ko if: ($root.linkedTemperatureControl(index_id())().length > 0 || $root.hasAnyTemperatureControl())  -->
                 <!-- ko with:  $root.linkedTemperatureControl(index_id())()[0] -->
-                <th class="temp_hum_control" data-bind="html: label, attr: {title: label}"></th>
+                {# <th class="temp_hum_control" data-bind="html: label, attr: {title: label}"></th> #}
                 <td class="temperature_target">
                     <form class="form-inline" style="margin:0" data-bind="submit: function(element) { $root.setTemperature($data, element) }">
                         <div class="input-append">
